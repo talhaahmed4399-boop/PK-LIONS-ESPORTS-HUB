@@ -1,91 +1,51 @@
-[3:11 PM, 2/17/2026] IGL: import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
+import React from 'react';
+import PlayerCard from './components/PlayerCard';
+import TeamCard from './components/TeamCard';
+import TournamentCard from './components/TournamentCard';
+import { Player, Team, Tournament } from './types';
 
-// Get the root element from public/index.html
-const rootElement = document.getElementById('root');
+// Dummy Data
+const players: Player[] = [
+  { inGameId: 'P001', name: 'Talha', role: 'Sniper', stats: { kd: 2.1, avgDamage: 320, accuracy: 45 } },
+  { inGameId: 'P002', name: 'Ali', role: 'Assault', stats: { kd: 1.8, avgDamage: 280, accuracy: 38 } },
+];
 
-if (!rootElement) {
-  throw new Error("Root element not found. Make sure #root exists in public/index.html");
-}
+const teams: Team[] = [
+  { name: 'PKL Legends', tag: 'PKL', roster: players },
+];
 
-const root = ReactDOM.createRoot(rootElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-[3:12 PM, 2/17/2026] IGL: import React, { useState } from 'react';
-import { Team, Tournament } from './types';
-import { INITIAL_TEAMS, INITIAL_TOURNAMENTS } from './constants';
+const tournaments: Tournament[] = [
+  { name: 'Last Circle Clash', prizePool: '50,000 PKR', entryFee: 'Free', description: 'The ultimate battle royale showdown.' },
+];
 
 const App: React.FC = () => {
-  const [teams, setTeams] = useState<Team[]>(INITIAL_TEAMS);
-  const [tournaments, setTournaments] = useState<Tournament[]>(INITIAL_TOURNAMENTS);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'teams' | 'tournaments'>('dashboard');
-
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans">
-      {/* Sidebar */}
-      <nav className="w-64 bg-[#0c0c0c] p-6 h-screen fixed">
-        <h1 className="text-2xl font-bold mb-6">PKL Esports Hub</h1>
-        <ul className="space-y-3">
-          <li
-            className={cursor-pointer ${activeTab === 'dashboard' ? 'text-yellow-400' : ''}}
-            onClick={() => setActiveTab('dashboard')}
-          >
-            Dashboard
-          </li>
-          <li
-            className={cursor-pointer ${activeTab === 'teams' ? 'text-yellow-400' : ''}}
-            onClick={() => setActiveTab('teams')}
-          >
-            Teams
-          </li>
-          <li
-            className={cursor-pointer ${activeTab === 'tournaments' ? 'text-yellow-400' : ''}}
-            onClick={() => setActiveTab('tournaments')}
-          >
-            Tournaments
-          </li>
-        </ul>
-      </nav>
+    <div className="app-container p-6 bg-gray-900 min-h-screen text-white">
+      <header className="mb-6">
+        <h1 className="text-4xl font-bold mb-2">PKL Esports Hub</h1>
+        <p className="text-gray-400">All players, teams, and tournaments in one place</p>
+      </header>
 
-      {/* Main content */}
-      <main className="ml-64 p-6">
-        {activeTab === 'dashboard' && (
-          <div>
-            <h2 className="text-3xl font-bold mb-4">Dashboard</h2>
-            <p>Welcome to PKL Esports Hub! Overview and stats will appear here.</p>
-          </div>
-        )}
+      <section className="players mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Players</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {players.map(player => <PlayerCard key={player.inGameId} player={player} />)}
+        </div>
+      </section>
 
-        {activeTab === 'teams' && (
-          <div>
-            <h2 className="text-3xl font-bold mb-4">Teams</h2>
-            <ul className="space-y-2">
-              {teams.map(team => (
-                <li key={team.id} className="p-3 bg-gray-800 rounded">
-                  {team.name} ({team.tag}) — {team.roster.length} players
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      <section className="teams mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Teams</h2>
+        <div className="grid grid-cols-1 gap-4">
+          {teams.map(team => <TeamCard key={team.name} team={team} />)}
+        </div>
+      </section>
 
-        {activeTab === 'tournaments' && (
-          <div>
-            <h2 className="text-3xl font-bold mb-4">Tournaments</h2>
-            <ul className="space-y-2">
-              {tournaments.map(t => (
-                <li key={t.id} className="p-3 bg-gray-800 rounded">
-                  {t.name} — {t.status} — Prize Pool: {t.prizePool}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </main>
+      <section className="tournaments mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Tournaments</h2>
+        <div className="grid grid-cols-1 gap-4">
+          {tournaments.map(tournament => <TournamentCard key={tournament.name} tournament={tournament} />)}
+        </div>
+      </section>
     </div>
   );
 };
